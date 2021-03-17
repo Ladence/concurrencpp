@@ -77,9 +77,16 @@ jobs:
           "${{ steps.tools.outputs.ninja }}"
           ${{ steps.cores.outputs.plus_one }}]==])
 
+      - name: Install clang 11
+        run: |
+            sudo apt-get update
+            sudo apt-get install clang-11 libc++-11-dev libc++abi-11-dev
+        if: ${{ startsWith(matrix.conf.os, 'ubuntu') }}
+
       - name: Build examples
         run: cmake -P cmake/ciBuild.cmake -- example build/example
           ${{ steps.args.outputs.args }}
+        continue-on-error: ${{ startsWith(matrix.conf.os, 'macos') }}
 
       - name: Build tests
         id: build_tests
