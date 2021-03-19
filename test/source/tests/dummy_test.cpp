@@ -9,17 +9,15 @@ using namespace concurrencpp::tests;
 
 int main(){
 	object_observer observer;	
-	std::thread t[8];
+	concurrencpp::runtime runtime;
 	
-	for(auto& thread : t ){
-		thread = std::thread([stub = observer.get_testing_stub()] () mutable {
-			stub();
+	for(size_t i = 0; i< 8 ; i++){
+		runtime.thread_pool_executor()->post([stub = observer.get_testing_stub()] () mutable {
+			stub();	
 		});
 	}
 	
-	for(auto& thread : t ){
-		thread.join();
-	}
+	std::this_thread::sleep_for(std::chrono::second(10));
 	
 	return 0;
 }
