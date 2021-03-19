@@ -81,4 +81,4 @@ function(add_test)
   endif()
 endfunction()
 
-add_test(NAME dummy_tests PATH source/tests/dummy_tests.cpp)
+add_test(NAME dummy_tests PATH source/tests/dummy_test.cpp)
