@@ -11,13 +11,13 @@ int main(){
 	object_observer observer;	
 	concurrencpp::runtime runtime;
 	
-	for(size_t i = 0; i< 8 ; i++){
+	for(size_t i = 0; i< 30000 ; i++){
 		runtime.thread_pool_executor()->post([stub = observer.get_testing_stub()] () mutable {
 			stub();	
 		});
 	}
 	
-	std::this_thread::sleep_for(std::chrono::seconds(10));
+	std::this_thread::sleep_for(std::chrono::seconds(20));
 	
 	return 0;
 }
