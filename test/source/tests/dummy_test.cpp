@@ -12,7 +12,7 @@ int main(){
     const auto task_count = worker_count * 10'000;
 
     object_observer observer;
-    auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+    auto executor = std::make_shared<concurrencpp::thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
     
     for (size_t i = 0; i < task_count; i++) {
         executor->post(observer.get_testing_stub());
