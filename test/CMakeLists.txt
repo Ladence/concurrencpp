@@ -81,43 +81,4 @@ function(add_test)
   endif()
 endfunction()
 
-add_test(NAME task_tests PATH source/tests/task_tests.cpp)
-add_test(NAME runtime_tests PATH source/tests/runtime_tests.cpp)
-
-add_test(NAME inline_executor_tests PATH source/tests/executor_tests/inline_executor_tests.cpp)
-add_test(NAME manual_executor_tests PATH source/tests/executor_tests/manual_executor_tests.cpp)
-add_test(NAME thread_executor_tests PATH source/tests/executor_tests/thread_executor_tests.cpp)
-add_test(NAME thread_pool_executor_tests PATH source/tests/executor_tests/thread_pool_executor_tests.cpp)
-add_test(NAME worker_thread_executor_tests PATH source/tests/executor_tests/worker_thread_executor_tests.cpp)
-
-add_test(NAME result_tests PATH source/tests/result_tests/result_tests.cpp)
-add_test(NAME result_resolving_tests PATH source/tests/result_tests/result_resolve_tests.cpp)
-add_test(NAME result_awaiting_tests PATH source/tests/result_tests/result_await_tests.cpp)
-
-add_test(NAME shared_result_tests PATH source/tests/result_tests/shared_result_tests.cpp)
-add_test(NAME shared_result_resolving_tests PATH source/tests/result_tests/shared_result_resolve_tests.cpp)
-add_test(NAME shared_result_awaiting_tests PATH source/tests/result_tests/shared_result_await_tests.cpp)
-
-add_test(NAME make_result_tests PATH source/tests/result_tests/make_result_tests.cpp)
-add_test(NAME result_promise_tests PATH source/tests/result_tests/result_promise_tests.cpp)
-add_test(NAME when_all_tests PATH source/tests/result_tests/when_all_tests.cpp)
-add_test(NAME when_any_tests PATH source/tests/result_tests/when_any_tests.cpp)
-
-add_test(NAME coroutine_promise_tests PATH source/tests/coroutine_tests/coroutine_promise_tests.cpp)
-add_test(NAME coroutine_tests PATH source/tests/coroutine_tests/coroutine_tests.cpp)
-
-add_test(NAME timer_queue_tests PATH source/tests/timer_tests/timer_queue_tests.cpp)
-add_test(NAME timer_tests PATH source/tests/timer_tests/timer_tests.cpp)
-
-if(NOT ENABLE_THREAD_SANITIZER)
-  return()
-endif()
-
-add_test(NAME tsan_executor_tests PATH source/thread_sanitizer/executors.cpp)
-add_test(NAME tsan_result_tests PATH source/thread_sanitizer/result.cpp)
-add_test(NAME tsan_shared_result_tests PATH source/thread_sanitizer/shared_result.cpp)
-add_test(NAME tsan_when_all_tests PATH source/thread_sanitizer/when_all.cpp)
-add_test(NAME tsan_when_any_tests PATH source/thread_sanitizer/when_any.cpp)
-add_test(NAME tsan_fibonacci PATH source/thread_sanitizer/fibonacci.cpp)
-add_test(NAME tsan_quick_sort PATH source/thread_sanitizer/quick_sort.cpp)
-add_test(NAME tsan_matrix_multiplication PATH source/thread_sanitizer/matrix_multiplication.cpp)
+add_test(NAME dummy_tests PATH source/tests/dummy_tests.cpp)
