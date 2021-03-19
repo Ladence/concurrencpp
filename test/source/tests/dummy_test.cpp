@@ -18,8 +18,8 @@ int main(){
         executor->post(observer.get_testing_stub());
     }
 
-    assert_true(observer.wait_execution_count(task_count, std::chrono::minutes(2)));
-    assert_true(observer.wait_destruction_count(task_count, std::chrono::minutes(2)));
+   observer.wait_execution_count(task_count, std::chrono::minutes(2));
+	observer.wait_destruction_count(task_count, std::chrono::minutes(2));
 	
 	executor->shutdown();
 	
