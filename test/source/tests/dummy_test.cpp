@@ -8,7 +8,7 @@
 using namespace concurrencpp::tests;
 
 int main(){
-	const auto worker_count = thread::hardware_concurrency();
+	const auto worker_count = std::thread::hardware_concurrency();
     const auto task_count = worker_count * 10'000;
 
     object_observer observer;
