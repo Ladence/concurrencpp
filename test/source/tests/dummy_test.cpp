@@ -7,14 +7,26 @@
 
 using namespace concurrencpp::tests;
 
+struct data{
+	std::mutex lock;
+	size_t counter = 0;
+};
+
 int main(){
-    object_observer observer;
+	object_observer observer;
 	std::thread threads[8];
 
+	auto ptr = std::make_shared<data>();
+	
     for (auto& thread : threads) {
-		thread = std::thread([stub = observer.get_testing_stub()] () mutable {
+		thread = std::thread([ptr] () mutable {
 			for(size_t i =0; i< 10'000; i ++){
-				stub();
+				auto& lock = ptr->lock;
+				auto& counter = ptr->counter;
+				{
+					std::unique_lock<std::mutex> _lock(lock);
+					++counter;	
+				}	
 			}
 		});
      }
@@ -25,7 +37,6 @@ int main(){
     for (auto& thread : threads) {
 		thread.join();
 	}	
-	
-	
+		
 	return 0;
 }
