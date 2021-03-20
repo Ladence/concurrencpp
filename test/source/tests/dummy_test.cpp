@@ -8,20 +8,24 @@
 using namespace concurrencpp::tests;
 
 int main(){
-	const auto worker_count = std::thread::hardware_concurrency();
-    const auto task_count = worker_count * 10'000;
-
     object_observer observer;
-    auto executor = std::make_shared<concurrencpp::thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
-    
-    for (size_t i = 0; i < task_count; i++) {
-        executor->post(observer.get_testing_stub());
-    }
+	std::thread threads[8];
 
-   observer.wait_execution_count(task_count, std::chrono::minutes(2));
-	observer.wait_destruction_count(task_count, std::chrono::minutes(2));
+    for (auto& thread : threads) {
+		thread = std::thread([stub = observer.get_testing_stub()] () mutable {
+			for(size_t i =0; i< 10'000; i ++){
+				stub();
+			}
+		});
+     }
+
+   observer.wait_execution_count(80'000, std::chrono::minutes(2));
+   observer.wait_destruction_count(80'000, std::chrono::minutes(2));
+
+    for (auto& thread : threads) {
+		thread.join();
+	}	
 	
-	executor->shutdown();
 	
 	return 0;
 }
