@@ -31,8 +31,6 @@ int main(){
 		});
      }
 
-   observer.wait_execution_count(80'000, std::chrono::minutes(2));
-   observer.wait_destruction_count(80'000, std::chrono::minutes(2));
 
     for (auto& thread : threads) {
 		thread.join();
