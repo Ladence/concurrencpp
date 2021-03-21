@@ -7,7 +7,6 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace concurrencpp::tests::details {
     class object_observer_state {
 
        private:
@@ -70,19 +69,17 @@ namespace concurrencpp::tests::details {
             m_condition.notify_all();
         }
     };
-}  // namespace concurrencpp::tests::details
-
 
 
     class testing_stub {
 
        protected:
-        std::shared_ptr<details::object_observer_state> m_state;
+        std::shared_ptr<object_observer_state> m_state;
 
        public:
         testing_stub() noexcept {}
 
-        testing_stub(std::shared_ptr<details::object_observer_state> state) noexcept : m_state(std::move(state)) {}
+        testing_stub(std::shared_ptr<object_observer_state> state) noexcept : m_state(std::move(state)) {}
 
         testing_stub(testing_stub&& rhs) noexcept = default;
 
@@ -101,10 +98,10 @@ namespace concurrencpp::tests::details {
        public:
         value_testing_stub(size_t expected_return_value) noexcept : m_expected_return_value(expected_return_value) {}
 
-        value_testing_stub(std::shared_ptr<details::object_observer_state> state, int return_value) noexcept :
+        value_testing_stub(std::shared_ptr<object_observer_state> state, int return_value) noexcept :
             testing_stub(std::move(state)), m_expected_return_value(return_value) {}
 
-        value_testing_stub(std::shared_ptr<details::object_observer_state> state, size_t return_value) noexcept :
+        value_testing_stub(std::shared_ptr<object_observer_state> state, size_t return_value) noexcept :
             testing_stub(std::move(state)), m_expected_return_value(return_value) {}
 
         value_testing_stub(value_testing_stub&& rhs) noexcept = default;
@@ -117,7 +114,7 @@ namespace concurrencpp::tests::details {
     class object_observer {
 
        private:
-        const std::shared_ptr<details::object_observer_state> m_state;
+        const std::shared_ptr<object_observer_state> m_state;
 
        public:
         object_observer();
@@ -188,7 +185,7 @@ size_t value_testing_stub::operator()() noexcept {
     return m_expected_return_value;
 }
 
-object_observer::object_observer() : m_state(std::make_shared<details::object_observer_state>()) {}
+object_observer::object_observer() : m_state(std::make_shared<object_observer_state>()) {}
 
 testing_stub object_observer::get_testing_stub() noexcept {
     return {m_state};
