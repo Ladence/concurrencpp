@@ -4,6 +4,75 @@
 #include <chrono>
 #include <memory>
 #include <unordered_map>
+#include <mutex>
+#include <condition_variable>
+
+namespace concurrencpp::tests::details {
+    class object_observer_state {
+
+       private:
+        mutable std::mutex m_lock;
+        mutable std::condition_variable m_condition;
+        std::unordered_map<size_t, size_t> m_execution_map;
+        size_t m_destruction_count;
+        size_t m_execution_count;
+
+       public:
+        object_observer_state() : m_destruction_count(0), m_execution_count(0) {}
+
+        size_t get_destruction_count() const noexcept {
+            std::unique_lock<decltype(m_lock)> lock(m_lock);
+            return m_destruction_count;
+        }
+
+        size_t get_execution_count() const noexcept {
+            std::unique_lock<decltype(m_lock)> lock(m_lock);
+            return m_execution_count;
+        }
+
+        std::unordered_map<size_t, size_t> get_execution_map() const noexcept {
+            std::unique_lock<decltype(m_lock)> lock(m_lock);
+            return m_execution_map;
+        }
+
+        bool wait_execution_count(size_t count, std::chrono::milliseconds timeout) {
+            std::unique_lock<decltype(m_lock)> lock(m_lock);
+            return m_condition.wait_for(lock, timeout, [count, this] {
+                return count == m_execution_count;
+            });
+        }
+
+        void on_execute() {
+            const auto this_id = ::concurrencpp::details::thread::get_current_virtual_id();
+
+            {
+                std::unique_lock<decltype(m_lock)> lock(m_lock);
+                ++m_execution_count;
+                ++m_execution_map[this_id];
+            }
+
+            m_condition.notify_all();
+        }
+
+        bool wait_destruction_count(size_t count, std::chrono::milliseconds timeout) {
+            std::unique_lock<decltype(m_lock)> lock(m_lock);
+            return m_condition.wait_for(lock, timeout, [count, this] {
+                return count == m_destruction_count;
+            });
+        }
+
+        void on_destroy() {
+            {
+                std::unique_lock<decltype(m_lock)> lock(m_lock);
+                ++m_destruction_count;
+            }
+
+            m_condition.notify_all();
+        }
+    };
+}  // namespace concurrencpp::tests::details
+
+
 
     class testing_stub {
 
@@ -89,78 +158,6 @@ int main(){
 	
 	return 0;
 }
-
-#include <mutex>
-#include <condition_variable>
-
-namespace concurrencpp::tests::details {
-    class object_observer_state {
-
-       private:
-        mutable std::mutex m_lock;
-        mutable std::condition_variable m_condition;
-        std::unordered_map<size_t, size_t> m_execution_map;
-        size_t m_destruction_count;
-        size_t m_execution_count;
-
-       public:
-        object_observer_state() : m_destruction_count(0), m_execution_count(0) {}
-
-        size_t get_destruction_count() const noexcept {
-            std::unique_lock<decltype(m_lock)> lock(m_lock);
-            return m_destruction_count;
-        }
-
-        size_t get_execution_count() const noexcept {
-            std::unique_lock<decltype(m_lock)> lock(m_lock);
-            return m_execution_count;
-        }
-
-        std::unordered_map<size_t, size_t> get_execution_map() const noexcept {
-            std::unique_lock<decltype(m_lock)> lock(m_lock);
-            return m_execution_map;
-        }
-
-        bool wait_execution_count(size_t count, std::chrono::milliseconds timeout) {
-            std::unique_lock<decltype(m_lock)> lock(m_lock);
-            return m_condition.wait_for(lock, timeout, [count, this] {
-                return count == m_execution_count;
-            });
-        }
-
-        void on_execute() {
-            const auto this_id = ::concurrencpp::details::thread::get_current_virtual_id();
-
-            {
-                std::unique_lock<decltype(m_lock)> lock(m_lock);
-                ++m_execution_count;
-                ++m_execution_map[this_id];
-            }
-
-            m_condition.notify_all();
-        }
-
-        bool wait_destruction_count(size_t count, std::chrono::milliseconds timeout) {
-            std::unique_lock<decltype(m_lock)> lock(m_lock);
-            return m_condition.wait_for(lock, timeout, [count, this] {
-                return count == m_destruction_count;
-            });
-        }
-
-        void on_destroy() {
-            {
-                std::unique_lock<decltype(m_lock)> lock(m_lock);
-                ++m_destruction_count;
-            }
-
-            m_condition.notify_all();
-        }
-    };
-}  // namespace concurrencpp::tests::details
-
-using testing_stub;
-using object_observer;
-using value_testing_stub;
 
 testing_stub& testing_stub::operator=(testing_stub&& rhs) noexcept {
     if (this == &rhs) {
