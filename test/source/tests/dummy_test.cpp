@@ -162,9 +162,9 @@ namespace concurrencpp::tests::details {
     };
 }  // namespace concurrencpp::tests::details
 
-using concurrencpp::tests::testing_stub;
-using concurrencpp::tests::object_observer;
-using concurrencpp::tests::value_testing_stub;
+using testing_stub;
+using object_observer;
+using value_testing_stub;
 
 testing_stub& testing_stub::operator=(testing_stub&& rhs) noexcept {
     if (this == &rhs) {
