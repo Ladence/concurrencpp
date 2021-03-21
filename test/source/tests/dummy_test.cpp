@@ -5,10 +5,6 @@
 #include <memory>
 #include <unordered_map>
 
-    namespace details {
-        class object_observer_state;
-    }
-
     class testing_stub {
 
        protected:
