@@ -6,8 +6,7 @@
 
 using concurrencpp::details::binary_semaphore;
 
-binary_semaphore::binary_semaphore(std::ptrdiff_t desired) : m_is_signaled(desired != 0);
-{}
+binary_semaphore::binary_semaphore(std::ptrdiff_t desired) : m_is_signaled(desired != 0) {}
 
 void binary_semaphore::release(std::ptrdiff_t update) {
     {
