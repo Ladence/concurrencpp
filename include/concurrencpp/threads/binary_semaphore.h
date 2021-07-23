@@ -51,7 +51,7 @@ namespace concurrencpp::details {
         bool try_acquire_until_impl(const std::chrono::time_point<std::chrono::system_clock>& abs_time);
 
        public:
-        counting_semaphore(std::ptrdiff_t desired);
+        binary_semaphore(std::ptrdiff_t desired);
 
         void release(std::ptrdiff_t update = 1);
         void acquire();
